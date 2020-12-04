@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include "ensitheora.h"
 
-extern bool fini;
-
 /* Les extern des variables pour la synchro ici */
 extern void *status;
 extern pthread_t audio_reader_pid;
@@ -22,6 +20,10 @@ extern pthread_mutex_t fenetre_mutex;
 extern pthread_cond_t cond_fenetre;
 extern bool fenetre_ready;
 
+extern pthread_mutex_t audio_device_mutex;
+extern pthread_cond_t cond_audio_device;
+extern bool audio_device_ready;
+
 //extern sem_t window_size_sem;
 //extern sem_t texture_sem;
 
@@ -37,6 +39,9 @@ void attendreTailleFenetre();
 
 void attendreFenetreTexture();
 void signalerFenetreEtTexturePrete();
+
+void attendreAudioDevice();
+void signalerAudioDevicePret();
 
 void debutConsommerTexture();
 void finConsommerTexture();

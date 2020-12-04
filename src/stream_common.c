@@ -6,19 +6,9 @@
 #include "stream_common.h"
 #include "synchro.h"
 
-bool fini = false;
-
-
-struct timespec datedebut;
-
-int msFromStart() {
-    struct timespec now;
-    clock_gettime(CLOCK_REALTIME, & now);
-
-    return (int)((now.tv_sec - datedebut.tv_sec)*1000.0 +
-                 (now.tv_nsec - datedebut.tv_nsec)/1000000.0);
-}
-
+bool audio_fini = false;
+bool video_fini = false;
+bool fichier_fini = false;
 
 void pageReader(FILE *vf, ogg_sync_state *pstate, ogg_page *ppage) {
     // lire une page theora
@@ -26,13 +16,13 @@ void pageReader(FILE *vf, ogg_sync_state *pstate, ogg_page *ppage) {
     char *buffer= NULL;
     assert(res != -1);
     // si une page n'est pas disponible, lire des données dans le fichier
-    while(res != 1 && ! fini) {
+    while(res != 1 && ! fichier_fini) {
         buffer = ogg_sync_buffer( pstate, 4096 );
         assert(buffer);
         int bytes = fread( buffer, 1, 4096, vf );
         if (bytes == 0 && feof( vf )) {
             printf("fin du fichier\n");
-            fini = true;
+            fichier_fini = true;
             exit(EXIT_FAILURE); // ou juste return ?
         }
         if (bytes > 0)

@@ -1,9 +1,6 @@
 #include <pthread.h>
 #include "synchro.h"
 
-
-extern bool fini;
-
 /* les variables pour la synchro, ici */
 void *status;
 pthread_t audio_reader_pid;
@@ -19,6 +16,10 @@ bool taille_ready = false;
 pthread_mutex_t fenetre_mutex;
 pthread_cond_t cond_fenetre;
 bool fenetre_ready = false;
+
+pthread_mutex_t audio_device_mutex;
+pthread_cond_t cond_audio_device;
+bool audio_device_ready = false;
 
 //sem_t window_size_sem;
 //sem_t texture_sem;
@@ -61,6 +62,20 @@ void attendreFenetreTexture() {
         pthread_cond_wait(&cond_fenetre, &fenetre_mutex);
     pthread_mutex_unlock(&fenetre_mutex);
 //    sem_wait(&texture_sem);
+}
+
+void signalerAudioDevicePret() {
+    pthread_mutex_lock(&audio_device_mutex);
+    audio_device_ready = true;
+    pthread_cond_signal(&cond_audio_device);
+    pthread_mutex_unlock(&audio_device_mutex);
+}
+
+void attendreAudioDevice() {
+    pthread_mutex_lock(&audio_device_mutex);
+    while (!audio_device_ready)
+        pthread_cond_wait(&cond_audio_device, &audio_device_mutex);
+    pthread_mutex_unlock(&audio_device_mutex);
 }
 
 void debutConsommerTexture() {

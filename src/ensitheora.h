@@ -5,7 +5,7 @@
 #include <SDL2/SDL.h>
 #include "ensivideo.h"
 
-#define NBTEX 30
+#define NBTEX 2048
 
 struct TextureDate {
     unsigned char *plane[3]; // copy of plane are contiguous, thus
@@ -13,6 +13,10 @@ struct TextureDate {
     double timems; // expiration date of the frame, in ms
 };
 
+extern bool paused;
+
+extern uint32_t last_tick_ms;
+extern uint32_t video_time_ms;
 
 extern struct streamstate *theorastrstate;
 

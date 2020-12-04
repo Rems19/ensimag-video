@@ -23,10 +23,10 @@ void *theoraStreamReader(void *arg) {
     int respac = 0;
     struct streamstate *s;
 
-    while(! fini) {
+    while(!video_fini) {
         //printf("theora loop\n");// vérifier si le fichier ne serait pas fini
         if ( feof( vf ) ) {
-            fini = true;
+            video_fini = true;
             return 0;
         }
 
@@ -82,11 +82,11 @@ void *vorbisStreamReader(void *arg) {
     int respac = 0;
     struct streamstate *s;
     
-    while(! fini) {
+    while(!audio_fini) {
       // printf ("vorbis loop \n");
 	// vérifier si le fichier ne serait pas fini
 	if ( feof( vf ) ) {
-	    fini = true;
+        audio_fini = true;
 	    printf("FIN de la lecture de VORBIS !");
 	    break;
 	}
@@ -122,7 +122,7 @@ void *vorbisStreamReader(void *arg) {
 	    break;
 	}
 	
-	if ( decodeAllHeaders(respac, s, TYPE_THEORA) )
+	if ( decodeAllHeaders(respac, s, TYPE_VORBIS) )
 	    continue;
 
 	// boucle principale de lecture vorbis
